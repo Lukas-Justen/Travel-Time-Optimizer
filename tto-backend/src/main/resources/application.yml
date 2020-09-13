@@ -1,1 +1,26 @@
+tto:
+  maps-api:
+    key: ""
+    url: "https://maps.googleapis.com/maps/api/distancematrix/json"
+    origin: "49.947695,7.831547"
+    destination: "50.018036,8.249520"
+  scheduling: "0/30 * * * * *"
 
+spring:
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/postgres"
+    password: "docker"
+    username: "postgres"
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    generate-ddl: false
+
+flyway:
+  check-location: true
+  locations: classpath:db/migration
+  init-version: 1
+  sql-migration-prefix: V
+  sql-migration-suffix: .sql
+  enabled: true

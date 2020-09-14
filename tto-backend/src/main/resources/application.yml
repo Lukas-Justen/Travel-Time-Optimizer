@@ -4,7 +4,7 @@ tto:
     url: "https://maps.googleapis.com/maps/api/distancematrix/json"
     origin: "49.947695,7.831547"
     destination: "50.018036,8.249520"
-  scheduling: "0/30 * * * * *"
+  scheduling: "0 0/2 * * * *"
 
 spring:
   datasource:

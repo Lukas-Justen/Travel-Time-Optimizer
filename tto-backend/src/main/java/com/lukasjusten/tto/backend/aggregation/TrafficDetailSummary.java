@@ -1,7 +1,10 @@
 package com.lukasjusten.tto.backend.aggregation;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -15,17 +18,14 @@ public class TrafficDetailSummary {
     private String origin;
     private String destination;
 
-    private List<LocalDateTime> timestamps;
-    private List<Integer> durations;
+    private List<SummaryDay> days;
 
     private TrafficDetailSummary(String origin,
                                  String destination,
-                                 List<LocalDateTime> timestamps,
-                                 List<Integer> durations) {
+                                 List<SummaryDay> days) {
         this.origin = origin;
         this.destination = destination;
-        this.timestamps = timestamps;
-        this.durations = durations;
+        this.days = days;
     }
 
     /**
@@ -51,7 +51,20 @@ public class TrafficDetailSummary {
         final List<LocalDateTime> timestamps = extractToList(trafficDetailList, TrafficDetail::getTimestamp);
         final List<Integer> durations = extractToList(trafficDetailList, TrafficDetail::getDurationInTraffic);
 
-        return new TrafficDetailSummary(origins.get(0), destinations.get(0), timestamps, durations);
+        Map<Integer, List<TrafficDetail>> groupedDetails = trafficDetailList.stream()
+                .collect(Collectors.groupingBy(trafficDetail -> trafficDetail.getTimestamp().getDayOfMonth()));
+
+        List<SummaryDay> summariesForDays = new LinkedList<>();
+
+        for (Integer day : groupedDetails.keySet()) {
+            List<TrafficDetail> detailsForDay = groupedDetails.get(day);
+            List<SummaryItem> summaryItemsForDay = detailsForDay.stream()
+                    .map(trafficDetail -> new SummaryItem(trafficDetail.getTimestamp().toLocalTime(), trafficDetail.getDuration()))
+                    .collect(Collectors.toList());
+            summariesForDays.add(new SummaryDay(day.toString(), summaryItemsForDay));
+        }
+
+        return new TrafficDetailSummary(origins.get(0), destinations.get(0), summariesForDays);
     }
 
     /**
@@ -104,20 +117,73 @@ public class TrafficDetailSummary {
         this.destination = destination;
     }
 
-    public List<LocalDateTime> getTimestamps() {
-        return timestamps;
+    public List<SummaryDay> getDays() {
+        return days;
     }
 
-    public void setTimestamps(List<LocalDateTime> timestamps) {
-        this.timestamps = timestamps;
+    public void setDays(List<SummaryDay> days) {
+        this.days = days;
+    }
+}
+
+class SummaryDay {
+
+    private String day;
+    private List<SummaryItem> trafficTimeSeries;
+
+    public SummaryDay() {
     }
 
-    public List<Integer> getDurations() {
-        return durations;
+    public SummaryDay(String day, List<SummaryItem> trafficTimeSeries) {
+        this.day = day;
+        this.trafficTimeSeries = trafficTimeSeries;
     }
 
-    public void setDurations(List<Integer> durations) {
-        this.durations = durations;
+    public String getDay() {
+        return day;
+    }
+
+    public void setDay(String day) {
+        this.day = day;
+    }
+
+    public List<SummaryItem> getTrafficTimeSeries() {
+        return trafficTimeSeries;
+    }
+
+    public void setTrafficTimeSeries(List<SummaryItem> trafficTimeSeries) {
+        this.trafficTimeSeries = trafficTimeSeries;
+    }
+
+}
+
+class SummaryItem {
+
+    private LocalTime time;
+    private int duration;
+
+    public SummaryItem() {
+    }
+
+    public SummaryItem(LocalTime time, int duration) {
+        this.time = time;
+        this.duration = duration;
+    }
+
+    public LocalTime getTime() {
+        return time;
+    }
+
+    public void setTime(LocalTime time) {
+        this.time = time;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 
 }

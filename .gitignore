@@ -87,3 +87,6 @@ Temporary Items
 
 # Google Maps API Key
 api_key
+
+# Generated Dart Files
+**/*.g.dart

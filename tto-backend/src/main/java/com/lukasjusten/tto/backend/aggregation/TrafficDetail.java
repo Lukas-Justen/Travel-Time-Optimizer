@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity(name = "traffic_details")
-public class TrafficDetails {
+public class TrafficDetail {
 
     @Id
     @GeneratedValue(generator = "uuid2")
@@ -24,12 +24,12 @@ public class TrafficDetails {
 
     private int distance;
     private int duration;
-    private int duration_in_traffic;
+    private int durationInTraffic;
 
-    public TrafficDetails() {
+    public TrafficDetail() {
     }
 
-    public TrafficDetails(String origin, String destination, LocalDateTime timestamp, JsonNode trafficDetails) {
+    public TrafficDetail(String origin, String destination, LocalDateTime timestamp, JsonNode trafficDetails) {
         Objects.requireNonNull(origin);
         Objects.requireNonNull(destination);
         Objects.requireNonNull(timestamp);
@@ -40,7 +40,7 @@ public class TrafficDetails {
 
         this.distance = trafficDetails.get("distance").get("value").asInt();
         this.duration = trafficDetails.get("duration").get("value").asInt();
-        this.duration_in_traffic = trafficDetails.get("duration_in_traffic").get("value").asInt();
+        this.durationInTraffic = trafficDetails.get("duration_in_traffic").get("value").asInt();
     }
 
     public String getUuid() {
@@ -91,12 +91,12 @@ public class TrafficDetails {
         this.duration = duration;
     }
 
-    public int getDuration_in_traffic() {
-        return duration_in_traffic;
+    public int getDurationInTraffic() {
+        return durationInTraffic;
     }
 
-    public void setDuration_in_traffic(int duration_in_traffic) {
-        this.duration_in_traffic = duration_in_traffic;
+    public void setDurationInTraffic(int durationInTraffic) {
+        this.durationInTraffic = durationInTraffic;
     }
 
     @Override
@@ -106,7 +106,7 @@ public class TrafficDetails {
                 ", destination='" + destination + '\'' +
                 ", distance=" + distance +
                 ", duration=" + duration +
-                ", duration_in_traffic=" + duration_in_traffic +
+                ", durationInTraffic=" + durationInTraffic +
                 '}';
     }
 

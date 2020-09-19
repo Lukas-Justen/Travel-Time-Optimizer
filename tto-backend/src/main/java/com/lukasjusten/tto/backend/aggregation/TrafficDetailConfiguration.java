@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConfigurationProperties(prefix = "tto.maps-api")
-public class TrafficDetailsConfiguration {
+public class TrafficDetailConfiguration {
 
     private String key;
     private String url;

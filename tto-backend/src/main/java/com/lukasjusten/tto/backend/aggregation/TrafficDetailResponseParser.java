@@ -9,12 +9,20 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
-public class TrafficDetailsResponseParser {
+public class TrafficDetailResponseParser {
 
-    public List<TrafficDetails> parse(JsonNode response, LocalDateTime timestamp) {
+    public static List<String> getStringListFromIterator(Iterator<JsonNode> iterator) {
+        List<String> list = new ArrayList<>();
+
+        iterator.forEachRemaining(t -> list.add(t.asText()));
+
+        return list;
+    }
+
+    public List<TrafficDetail> parse(JsonNode response, LocalDateTime timestamp) {
         Objects.requireNonNull(response);
 
-        List<TrafficDetails> result = new ArrayList<>();
+        List<TrafficDetail> result = new ArrayList<>();
 
         ArrayNode destinationsNode = (ArrayNode) response.get("destination_addresses");
         ArrayNode originsNode = (ArrayNode) response.get("origin_addresses");
@@ -24,22 +32,14 @@ public class TrafficDetailsResponseParser {
 
         ArrayNode rows = (ArrayNode) response.get("rows");
 
-        for(int o = 0; o < origins.size(); o++) {
+        for (int o = 0; o < origins.size(); o++) {
             ArrayNode elements = (ArrayNode) rows.get(o).get("elements");
-            for(int d = 0; d < destinations.size(); d++) {
-                result.add(new TrafficDetails(origins.get(o), destinations.get(d), timestamp, elements.get(d)));
+            for (int d = 0; d < destinations.size(); d++) {
+                result.add(new TrafficDetail(origins.get(o), destinations.get(d), timestamp, elements.get(d)));
             }
         }
 
         return result;
-    }
-
-    public static List<String> getStringListFromIterator(Iterator<JsonNode> iterator) {
-        List<String> list = new ArrayList<>();
-
-        iterator.forEachRemaining(t -> list.add(t.asText()));
-
-        return list;
     }
 
 }
